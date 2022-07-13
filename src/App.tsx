@@ -114,16 +114,39 @@ const TopBar = () => {
   );
 }
 
-const TyperComponent = ({
-  wordList,
-  completedWordsList,
+const CompletedWordsComponent = ({completedWordsList} : {completedWordsList: string[]}) => {
+  return (
+    <>
+      { // Render any completed words
+        completedWordsList.length > 0 ?
+          completedWordsList.map((word, widx) => {
+            return (
+              <>
+                <Word key={widx}>
+                  {
+                    word.split("").map((letter, lidx) => {
+                      return (
+                        <Letter correct={"y"} key={widx+lidx} style={{color: StyleConstants.yellow}}>{letter}</Letter>
+                      );
+                    })
+                  }
+                </Word>
+              </>
+            );
+          })
+          :
+          null
+      }
+    </>
+  );
+}
+
+const CurrentWordComponent = ({
   currentWord,
   currentWordIndex,
   typedLetters,
 
 } : {
-  wordList: string[],
-  completedWordsList: string[],
   currentWord: string,
   currentWordIndex: number,
   typedLetters: string[],
@@ -131,105 +154,96 @@ const TyperComponent = ({
   const extraLetters = typedLetters.slice(currentWord.length, typedLetters.length);
 
   return (
-    <TyperContainer>
-      <TypeText>
-        <>
-          { // Render any completed words
-            completedWordsList.length > 0 ?
-              completedWordsList.map((word, widx) => {
+    <>
+      { // Render current word
+        <Word key={currentWordIndex}>
+          <>
+            {
+              currentWord.split("").map((letter, lidx) => {
+                const currentLetter = typedLetters.length === lidx;
+                const correctLetter = typedLetters[lidx] === currentWord.split("")[lidx];
+                const lastLetter = currentWord.length === lidx + 1;
+                const hasTypedAnything = typedLetters.length > 0;
+                const isLetterBeforeCurrentLetter = lidx > typedLetters.length;
+
                 return (
                   <>
-                    <Word key={widx}>
-                      {
-                        word.split("").map((letter, lidx) => {
-                          return (
-                            <Letter correct={"y"} key={widx+lidx} style={{color: StyleConstants.yellow}}>{letter}</Letter>
-                          );
-                        })
-                      }
-                    </Word>
+                    {
+                      currentLetter ?
+                        <>
+                          <Caret>|</Caret>
+                          <Letter correct={"n"} key={currentWordIndex+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                        </>
+                        :
+                        <>
+                          {
+                            hasTypedAnything ?
+                              <>
+                                {
+                                  isLetterBeforeCurrentLetter ?
+                                    <Letter correct={"u"} key={currentWordIndex+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                                    :
+                                    <>
+                                      {
+                                        correctLetter ?
+                                          <Letter correct={"y"} key={currentWordIndex+lidx} style={{color: StyleConstants.yellow}}>{letter}</Letter>
+                                          :
+                                          <Letter correct={"n"} key={currentWordIndex+lidx} style={{color: StyleConstants.red}}>{typedLetters[lidx]}</Letter>
+                                      }
+                                      {
+                                        lastLetter && extraLetters.length === 0 ?
+                                          <Caret>|</Caret>
+                                          :
+                                          null
+                                      }
+                                    </>
+                                }
+                              </>
+                              :
+                              <Letter correct={"n"} key={currentWordIndex+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                          }
+                        </>
+                    }
                   </>
                 );
               })
-              :
-              null
-          }
-          { // Render current word
-            <Word key={currentWordIndex}>
-              <>
-                {
-                  currentWord.split("").map((letter, lidx) => {
-                    const currentLetter = typedLetters.length === lidx;
-                    const correctLetter = typedLetters[lidx] === currentWord.split("")[lidx];
-                    const lastLetter = currentWord.length === lidx + 1;
-                    const hasTypedAnything = typedLetters.length > 0;
-                    const isLetterBeforeCurrentLetter = lidx > typedLetters.length;
+            }
+            {
+              extraLetters ?
+                extraLetters.map((letter, lidx) => {
+                  const lastLetter = extraLetters.length - 1 === lidx;
+                  return (
+                    <>
+                      <Letter correct={"n"} key={currentWordIndex + lidx} style={{ color: StyleConstants.red_extra_letter }}>{letter}</Letter>
+                      {
+                        lastLetter ?
+                        <Caret>|</Caret>
+                        :
+                        null
+                      }
+                    </>
+                  );
+                })
+                :
+                null
+            }
+          </>
+        </Word>
+      }
+    </>
+  );
+}
 
-                    return (
-                      <>
-                        {
-                          currentLetter ?
-                            <>
-                              <Caret>|</Caret>
-                              <Letter correct={"n"} key={currentWordIndex+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
-                            </>
-                            :
-                            <>
-                              {
-                                hasTypedAnything ?
-                                  <>
-                                    {
-                                      isLetterBeforeCurrentLetter ?
-                                        <Letter correct={"u"} key={currentWordIndex+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
-                                        :
-                                        <>
-                                          {
-                                            correctLetter ?
-                                              <Letter correct={"y"} key={currentWordIndex+lidx} style={{color: StyleConstants.yellow}}>{letter}</Letter>
-                                              :
-                                              <Letter correct={"n"} key={currentWordIndex+lidx} style={{color: StyleConstants.red}}>{typedLetters[lidx]}</Letter>
-                                          }
-                                          {
-                                            lastLetter && extraLetters.length === 0 ?
-                                              <Caret>|</Caret>
-                                              :
-                                              null
-                                          }
-                                        </>
-                                    }
-                                  </>
-                                  :
-                                  <Letter correct={"n"} key={currentWordIndex+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
-                              }
-                            </>
-                        }
-                      </>
-                    );
-                  })
-                }
-                {
-                  extraLetters ?
-                    extraLetters.map((letter, lidx) => {
-                      const lastLetter = extraLetters.length - 1 === lidx;
-                      return (
-                        <>
-                          <Letter correct={"n"} key={currentWordIndex + lidx} style={{ color: StyleConstants.red_extra_letter }}>{letter}</Letter>
-                          {
-                            lastLetter ?
-                            <Caret>|</Caret>
-                            :
-                            null
-                          }
-                        </>
-                      );
-                    })
-                    :
-                    null
-                }
-              </>
-            </Word>
-          }
-          { // Render any yet to be written words
+const LaterWordsComponent = ({
+  wordList,
+  currentWordIndex
+} : {
+  wordList: string[],
+  currentWordIndex: number
+}) => {
+  return (
+    <>
+      { // Render any yet to be written words
             wordList.map((word, widx) => {
               return (
                 <>
@@ -253,6 +267,31 @@ const TyperComponent = ({
               );
             })
           }
+    </>
+  );
+}
+
+const TyperComponent = ({
+  wordList,
+  completedWordsList,
+  currentWord,
+  currentWordIndex,
+  typedLetters
+} : {
+  wordList: string[],
+  completedWordsList: string[],
+  currentWord: string,
+  currentWordIndex: number,
+  typedLetters: string[]
+}) => {
+  return (
+    <TyperContainer>
+      <TypeText>
+        <>
+          <CompletedWordsComponent completedWordsList={completedWordsList}/>
+          <CurrentWordComponent currentWord={currentWord} currentWordIndex={currentWordIndex} typedLetters={typedLetters} />
+          <LaterWordsComponent wordList={wordList} currentWordIndex={currentWordIndex} />
+          
         </>
       </TypeText>
     </TyperContainer>
