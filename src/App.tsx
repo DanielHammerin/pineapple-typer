@@ -67,6 +67,13 @@ const TypeText = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  padding: 1rem 1rem 0 1rem;
+`;
+
+const NextLineWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   padding: 1rem;
 `;
 
@@ -271,14 +278,44 @@ const LaterWordsComponent = ({
   );
 }
 
+const NextLineComponent = ({
+  nextLine
+} : {
+  nextLine: string[]
+}) => {
+  return (
+    <>
+      { // Render any yet to be written words
+            nextLine.map((word, widx) => {
+              return (
+                <Word key={widx}>
+                  {
+                    word.split("").map((letter, lidx) => {
+                      return (
+                        <>
+                          <Letter correct={"u"} key={widx+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                        </>
+                      );
+                    })
+                  }
+                </Word>
+              );
+            })
+          }
+    </>
+  );
+}
+
 const TyperComponent = ({
   wordList,
+  nextLine,
   completedWordsList,
   currentWord,
   currentWordIndex,
   typedLetters
 } : {
   wordList: string[],
+  nextLine: string[],
   completedWordsList: string[],
   currentWord: string,
   currentWordIndex: number,
@@ -291,9 +328,11 @@ const TyperComponent = ({
           <CompletedWordsComponent completedWordsList={completedWordsList}/>
           <CurrentWordComponent currentWord={currentWord} currentWordIndex={currentWordIndex} typedLetters={typedLetters} />
           <LaterWordsComponent wordList={wordList} currentWordIndex={currentWordIndex} />
-          
         </>
       </TypeText>
+      <NextLineWrapper>
+        <NextLineComponent nextLine={nextLine} />
+      </NextLineWrapper>
     </TyperContainer>
   );
 }
@@ -305,9 +344,46 @@ const App = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
   const [typedLetters, setTypedLetters] = useState<string[]>([]);
 
+  const [lines, setLines] = useState<string[][]>([]);
+  const [currentLine, setCurrentLine] = useState<string[]>([]);
+  const [nextLine, setNextLine] = useState<string[]>([]);
+
+  const lineLength = 10;
+
+  const newLine = () => {
+    setCurrentWord(nextLine[0]);
+    setLines(lines.slice(1, lines.length));
+    setCurrentWordIndex(0);
+    setTypedLetters([]);
+  };
+
+  const isLastWordOfLine = () => {
+    return currentWordIndex - 1 === lineLength;
+  }
+
   useEffect(() => {
+    const [list, chunkSize] = [wordList, lineLength]
+    const linesList = [...Array(Math.ceil(list.length / chunkSize))]
+      .map((_, i) => list.slice(i * chunkSize, i * chunkSize + chunkSize));
+    
+    setLines(linesList);
+
+  }, [wordList]);
+
+  useEffect(() => {
+    if (lines[0]) setCurrentLine(lines[0]);
+    if (lines[1]) setNextLine(lines[1]);
+  }, [lines]);
+
+  useEffect(() => {
+    // if (!currentWord) setCurrentWord(wordList[currentWordIndex]);
+    if (!currentLine) return;
     if (!currentWord) setCurrentWord(wordList[currentWordIndex]);
   }, [currentWord, wordList, currentWordIndex]);
+
+  useEffect(() => {
+    if (currentLine.length > 0) setCurrentWord(currentLine[currentWordIndex]);
+  }, [currentLine, currentWordIndex]);
 
   useEffect(() => {
 		document.onkeydown = (e) => {
@@ -324,12 +400,24 @@ const App = () => {
           console.log(`Current word: ${currentWord}`);
           console.log(`Current word index: ${currentWordIndex}`);
           console.log(`Typed letters: ${typedLetters}`);
+          console.log(lines)
+          console.log(currentLine)
+          console.log(nextLine)
           break;
         case " ":
           if (typedLetters.join("") === currentWord) {
-            setCompletedWordsList([...completedWordsList, wordList.splice(0, 1).toString()]);
-            setWordlist(wordList.slice(0, wordList.length));
-            setCurrentWord(wordList[currentWordIndex]);
+            // setCompletedWordsList([...completedWordsList, wordList.splice(0, 1).toString()]);
+            // setWordlist(wordList.slice(0, wordList.length));
+            // setCurrentWord(wordList[currentWordIndex]);
+            
+            if (isLastWordOfLine()) {
+              newLine();
+              return;
+            }
+
+            setCompletedWordsList([...completedWordsList, currentLine.splice(0, 1).toString()]);
+            setCurrentLine(currentLine.slice(0, currentLine.length));
+            setCurrentWord(currentLine[currentWordIndex]);
             setCurrentWordIndex(currentWordIndex);
             setTypedLetters([]);
           }
@@ -339,6 +427,9 @@ const App = () => {
             setTypedLetters(typedLetters.slice(0, typedLetters.length - 1));
           }
           break;
+        case "q":
+          newLine();
+          break;
         default:
           setTypedLetters([...typedLetters, e.key]);
 
@@ -347,14 +438,24 @@ const App = () => {
 		return () => {
 			document.onkeydown = null;
 		};
-	}, [typedLetters, currentWord, wordList, currentWordIndex, completedWordsList]);
+	}, [
+    typedLetters, 
+    currentWord, 
+    wordList, 
+    currentWordIndex, 
+    completedWordsList,
+    lines,
+    currentLine,
+    nextLine
+  ]);
 
   return (
     <AppContainer style={{backgroundImage: `url(${Background})`}}>
       <Content>
         <TopBar />
         <TyperComponent 
-          wordList = {wordList} 
+          wordList = {currentLine} 
+          nextLine = {nextLine}
           completedWordsList = {completedWordsList}
           currentWord = {currentWord} 
           currentWordIndex = {currentWordIndex}
