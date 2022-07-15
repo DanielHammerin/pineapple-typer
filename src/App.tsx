@@ -55,7 +55,7 @@ const TyperContainer = styled.div`
   flex-direction: column;
   min-width: 50rem;
   max-width: 50rem;
-  /* max-height: 6.5rem; */
+  max-height: 8.5rem;
   margin: 10rem 2rem auto 2rem;
   background: #00000036;
   border-radius: 1rem;
@@ -85,10 +85,10 @@ const Letter = styled.div<{correct: string}>`
   /* ${p => (p.correct === "n" ? `text-shadow: 0 0 10px ${StyleConstants.red}, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;` : null)}; */
 `;
 
-const Caret = styled.span`
+const Caret = styled.span<{offset: number}>`
   transition: left 0.1s ease;
-  /* margin-left: -7.29165px;
-  position: absolute; */
+  margin-left: ${p => (p.offset)}rem;
+  position: absolute;
   color: #00eeff;
   animation: blink 1.5s infinite 1s;
 
@@ -152,6 +152,9 @@ const CurrentWordComponent = ({
   typedLetters: string[],
 }) => {
   const extraLetters = typedLetters.slice(currentWord.length, typedLetters.length);
+  const defaultOffset = 0.456;
+  const characterWidth = 1.204;
+  const offset = typedLetters.length > 0 ? typedLetters.length * characterWidth - defaultOffset : -defaultOffset;
 
   return (
     <>
@@ -171,7 +174,7 @@ const CurrentWordComponent = ({
                     {
                       currentLetter ?
                         <>
-                          <Caret>|</Caret>
+                          <Caret offset={offset}>|</Caret>
                           <Letter correct={"n"} key={currentWordIndex+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
                         </>
                         :
@@ -192,7 +195,7 @@ const CurrentWordComponent = ({
                                       }
                                       {
                                         lastLetter && extraLetters.length === 0 ?
-                                          <Caret>|</Caret>
+                                          <Caret offset={offset}>|</Caret>
                                           :
                                           null
                                       }
@@ -217,7 +220,7 @@ const CurrentWordComponent = ({
                       <Letter correct={"n"} key={currentWordIndex + lidx} style={{ color: StyleConstants.red_extra_letter }}>{letter}</Letter>
                       {
                         lastLetter ?
-                        <Caret>|</Caret>
+                        <Caret offset={offset}>|</Caret>
                         :
                         null
                       }
