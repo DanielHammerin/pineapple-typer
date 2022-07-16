@@ -55,19 +55,26 @@ const TyperContainer = styled.div`
   flex-direction: column;
   min-width: 50rem;
   max-width: 50rem;
-  max-height: 8.5rem;
+  max-height: 9rem;
   margin: 10rem 2rem auto 2rem;
+  padding: 1rem;
   background: #00000036;
   border-radius: 1rem;
-  overflow: hidden;
 `;
 
 const TypeText = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 7rem;
+  overflow: hidden;
+`;
+
+const TypeTextContent = styled.div<{offset: number}>`
+  margin-top: -${p => (p.offset * 2.375)}rem;
   font-size: 2rem;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  padding: 1rem;
 `;
 
 const Word = styled.div`
@@ -80,6 +87,7 @@ const Word = styled.div`
 const Letter = styled.div<{correct: string}>`
   font-size: 2rem;
   color: #ff901f;
+  overflow: visible;
   
   ${p => (p.correct === "y" ? `text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;` : null)};
   /* ${p => (p.correct === "n" ? `text-shadow: 0 0 10px ${StyleConstants.red}, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;` : null)}; */
@@ -119,21 +127,25 @@ const CompletedWordsComponent = ({completedWordsList} : {completedWordsList: str
     <>
       { // Render any completed words
         completedWordsList.length > 0 ?
-          completedWordsList.map((word, widx) => {
-            return (
-              <>
-                <Word key={widx}>
-                  {
-                    word.split("").map((letter, lidx) => {
-                      return (
-                        <Letter correct={"y"} key={widx+lidx} style={{color: StyleConstants.yellow}}>{letter}</Letter>
-                      );
-                    })
-                  }
-                </Word>
-              </>
-            );
-          })
+          React.Children.toArray(
+            completedWordsList.map((word, widx) => {
+              return (
+                <>
+                  <Word>
+                    {
+                      React.Children.toArray(
+                        word.split("").map((letter, lidx) => {
+                          return (
+                            <Letter correct={"y"} style={{color: StyleConstants.yellow}}>{letter}</Letter>
+                          );
+                        })
+                      )
+                    }
+                  </Word>
+                </>
+              );
+            })
+          )
           :
           null
       }
@@ -162,71 +174,75 @@ const CurrentWordComponent = ({
         <Word key={currentWordIndex}>
           <>
             {
-              currentWord.split("").map((letter, lidx) => {
-                const currentLetter = typedLetters.length === lidx;
-                const correctLetter = typedLetters[lidx] === currentWord.split("")[lidx];
-                const lastLetter = currentWord.length === lidx + 1;
-                const hasTypedAnything = typedLetters.length > 0;
-                const isLetterBeforeCurrentLetter = lidx > typedLetters.length;
+              React.Children.toArray(
+                currentWord.split("").map((letter, lidx) => {
+                  const currentLetter = typedLetters.length === lidx;
+                  const correctLetter = typedLetters[lidx] === currentWord.split("")[lidx];
+                  const lastLetter = currentWord.length === lidx + 1;
+                  const hasTypedAnything = typedLetters.length > 0;
+                  const isLetterBeforeCurrentLetter = lidx > typedLetters.length;
 
-                return (
-                  <>
-                    {
-                      currentLetter ?
-                        <>
-                          <Caret offset={offset}>|</Caret>
-                          <Letter correct={"n"} key={currentWordIndex+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
-                        </>
-                        :
-                        <>
-                          {
-                            hasTypedAnything ?
-                              <>
-                                {
-                                  isLetterBeforeCurrentLetter ?
-                                    <Letter correct={"u"} key={currentWordIndex+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
-                                    :
-                                    <>
-                                      {
-                                        correctLetter ?
-                                          <Letter correct={"y"} key={currentWordIndex+lidx} style={{color: StyleConstants.yellow}}>{letter}</Letter>
-                                          :
-                                          <Letter correct={"n"} key={currentWordIndex+lidx} style={{color: StyleConstants.red}}>{typedLetters[lidx]}</Letter>
-                                      }
-                                      {
-                                        lastLetter && extraLetters.length === 0 ?
-                                          <Caret offset={offset}>|</Caret>
-                                          :
-                                          null
-                                      }
-                                    </>
-                                }
-                              </>
-                              :
-                              <Letter correct={"n"} key={currentWordIndex+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
-                          }
-                        </>
-                    }
-                  </>
-                );
-              })
-            }
-            {
-              extraLetters ?
-                extraLetters.map((letter, lidx) => {
-                  const lastLetter = extraLetters.length - 1 === lidx;
                   return (
                     <>
-                      <Letter correct={"n"} key={currentWordIndex + lidx} style={{ color: StyleConstants.red_extra_letter }}>{letter}</Letter>
                       {
-                        lastLetter ?
-                        <Caret offset={offset}>|</Caret>
-                        :
-                        null
+                        currentLetter ?
+                          <>
+                            <Caret offset={offset}>|</Caret>
+                            <Letter correct={"n"} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                          </>
+                          :
+                          <>
+                            {
+                              hasTypedAnything ?
+                                <>
+                                  {
+                                    isLetterBeforeCurrentLetter ?
+                                      <Letter correct={"u"} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                                      :
+                                      <>
+                                        {
+                                          correctLetter ?
+                                            <Letter correct={"y"} style={{color: StyleConstants.yellow}}>{letter}</Letter>
+                                            :
+                                            <Letter correct={"n"} style={{color: StyleConstants.red}}>{typedLetters[lidx]}</Letter>
+                                        }
+                                        {
+                                          lastLetter && extraLetters.length === 0 ?
+                                            <Caret offset={offset}>|</Caret>
+                                            :
+                                            null
+                                        }
+                                      </>
+                                  }
+                                </>
+                                :
+                                <Letter correct={"n"} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                            }
+                          </>
                       }
                     </>
                   );
                 })
+              )
+            }
+            {
+              extraLetters ?
+                React.Children.toArray(
+                  extraLetters.map((letter, lidx) => {
+                    const lastLetter = extraLetters.length - 1 === lidx;
+                    return (
+                      <>
+                        <Letter correct={"n"} key={currentWordIndex + lidx} style={{ color: StyleConstants.red_extra_letter }}>{letter}</Letter>
+                        {
+                          lastLetter ?
+                          <Caret offset={offset}>|</Caret>
+                          :
+                          null
+                        }
+                      </>
+                    );
+                  })
+                )
                 :
                 null
             }
@@ -247,15 +263,17 @@ const LaterWordsComponent = ({
   return (
     <>
       { // Render any yet to be written words
-            wordList.map((word, widx) => {
-              return (
-                <>
-                  {
-                    widx === currentWordIndex ?
-                      null
-                      :
-                      <Word key={widx}>
-                        {
+        React.Children.toArray(
+          wordList.map((word, widx) => {
+            return (
+              <>
+                {
+                  widx === currentWordIndex ?
+                    null
+                    :
+                    <Word key={widx}>
+                      {
+                        React.Children.toArray(
                           word.split("").map((letter, lidx) => {
                             return (
                               <>
@@ -263,13 +281,15 @@ const LaterWordsComponent = ({
                               </>
                             );
                           })
-                        }
-                      </Word>
-                  }
-                </>
-              );
-            })
-          }
+                        )
+                      }
+                    </Word>
+                }
+              </>
+            );
+          })
+        )
+      }
     </>
   );
 }
@@ -279,22 +299,24 @@ const TyperComponent = ({
   completedWordsList,
   currentWord,
   currentWordIndex,
-  typedLetters
+  typedLetters,
+  textVerticalOffset
 } : {
   wordList: string[],
   completedWordsList: string[],
   currentWord: string,
   currentWordIndex: number,
-  typedLetters: string[]
+  typedLetters: string[],
+  textVerticalOffset: number
 }) => {
   return (
     <TyperContainer>
       <TypeText>
-        <>
+        <TypeTextContent offset={textVerticalOffset}>
           <CompletedWordsComponent completedWordsList={completedWordsList}/>
           <CurrentWordComponent currentWord={currentWord} currentWordIndex={currentWordIndex} typedLetters={typedLetters} />
           <LaterWordsComponent wordList={wordList} currentWordIndex={currentWordIndex} />
-        </>
+        </TypeTextContent>
       </TypeText>
     </TyperContainer>
   );
@@ -306,6 +328,7 @@ const App = () => {
   const [currentWord, setCurrentWord] = useState<string>("");
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
   const [typedLetters, setTypedLetters] = useState<string[]>([]);
+  const [textVerticalOffset, setTextVerticalOffset] = useState<number>(0);
 
   useEffect(() => {
     if (!currentWord) setCurrentWord(wordList[currentWordIndex]);
@@ -341,6 +364,9 @@ const App = () => {
             setTypedLetters(typedLetters.slice(0, typedLetters.length - 1));
           }
           break;
+        case "q":
+          setTextVerticalOffset(textVerticalOffset + 1);
+          break;
         default:
           setTypedLetters([...typedLetters, e.key]);
 
@@ -349,7 +375,7 @@ const App = () => {
 		return () => {
 			document.onkeydown = null;
 		};
-	}, [typedLetters, currentWord, wordList, currentWordIndex, completedWordsList]);
+	}, [typedLetters, currentWord, wordList, currentWordIndex, completedWordsList, textVerticalOffset]);
 
   return (
     <AppContainer style={{backgroundImage: `url(${Background})`}}>
@@ -361,6 +387,7 @@ const App = () => {
           currentWord = {currentWord} 
           currentWordIndex = {currentWordIndex}
           typedLetters = {typedLetters}
+          textVerticalOffset = {textVerticalOffset}
           />
       </Content>
     </AppContainer>
