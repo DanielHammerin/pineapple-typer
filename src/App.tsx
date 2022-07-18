@@ -70,6 +70,7 @@ const TypeText = styled.div`
 `;
 
 const TypeTextContent = styled.div<{offset: number}>`
+  position: relative;
   margin-top: -${p => (p.offset * 2.375)}rem;
   font-size: 2rem;
   display: flex;
@@ -89,7 +90,8 @@ const Letter = styled.div<{correct: string}>`
   color: #ff901f;
   overflow: visible;
   
-  ${p => (p.correct === "y" ? `text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;` : null)};
+  ${p => (p.correct === "y" ? `text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073` : null)};
+  /* ${p => (p.correct === "y" ? `text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;` : null)}; */
   /* ${p => (p.correct === "n" ? `text-shadow: 0 0 10px ${StyleConstants.red}, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;` : null)}; */
 `;
 
@@ -171,7 +173,7 @@ const CurrentWordComponent = ({
   return (
     <>
       { // Render current word
-        <Word key={currentWordIndex}>
+        <Word key={currentWordIndex} id="current_word">
           <>
             {
               React.Children.toArray(
@@ -330,6 +332,28 @@ const App = () => {
   const [typedLetters, setTypedLetters] = useState<string[]>([]);
   const [textVerticalOffset, setTextVerticalOffset] = useState<number>(0);
 
+  const shuffleWordList = (list: string[]) => {
+    for (let i = list.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = list[i];
+      list[i] = list[j];
+      list[j] = temp;
+    }
+  };
+
+  const shouldOffset = (offset: number) => {
+    const currentWord = document.getElementById("current_word");
+    if (currentWord) {
+      console.log(currentWord.offsetTop);
+      if (currentWord.offsetTop <= 38) return false;
+      return (currentWord.offsetTop > (38 * offset));
+    }
+  }
+
+  useEffect(() => {
+    shuffleWordList(wordsJson);
+  }, []);
+
   useEffect(() => {
     if (!currentWord) setCurrentWord(wordList[currentWordIndex]);
   }, [currentWord, wordList, currentWordIndex]);
@@ -369,7 +393,9 @@ const App = () => {
           break;
         default:
           setTypedLetters([...typedLetters, e.key]);
-
+          if (shouldOffset(textVerticalOffset + 1)) {
+            setTextVerticalOffset(textVerticalOffset + 1);
+          }
       }
 		};
 		return () => {
