@@ -451,7 +451,7 @@ const ResultsComponent = ({
 }) => {
   return (
     <ResultsScreen>
-      {(completedWords / testDuration) * 60} WPM
+      {((completedWords / testDuration) * 60).toFixed(1)} WPM
       <FontAwesomeIcon icon={faRotateLeft} onClick={() => {reset();}} style={{cursor: "pointer"}}/>
     </ResultsScreen>
   );
