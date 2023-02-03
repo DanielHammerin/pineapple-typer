@@ -61,7 +61,8 @@ const TopBarContainer = styled.div`
 
 const MenuOption = styled.div`
   font-size: 1.5rem;
-  color: #ffd319;
+  color: ${StyleConstants.yellow};
+  text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
   margin: 0 1rem;
 `;
 
@@ -80,7 +81,7 @@ const TyperContainer = styled.div`
   min-width: 50rem;
   max-width: 50rem;
   max-height: 9rem;
-  margin: 0.5rem 2rem auto 2rem;
+  margin: 0.5rem 2rem 2rem 2rem;
   padding: 1rem;
   background: #00000036;
   border-radius: 1rem;
@@ -94,10 +95,28 @@ const ResultsScreen = styled.div`
   min-width: 50rem;
   max-width: 50rem;
   height: 9rem;
-  margin: 0.5rem 2rem auto 2rem;
+  margin: 0.5rem 2rem 2rem 2rem;
   padding: 2rem 1rem;
   background: #00000036;
   border-radius: 1rem;
+
+  font-size: 1.5rem;
+  color: ${StyleConstants.yellow};
+  text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
+`;
+
+const ResetButton = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 5rem;
+  max-width: 5rem;
+  height: 5rem;
+  margin: 5rem 2rem auto 2rem;
+  background: #00000036;
+  border-radius: 1rem;
+  cursor: pointer;
 
   font-size: 1.5rem;
   color: ${StyleConstants.yellow};
@@ -111,7 +130,7 @@ const TypeText = styled.div`
   overflow: hidden;
 `;
 
-const TypeTextContent = styled.div<{offset: number}>`
+const TypeTextContent = styled.div<{ offset: number }>`
   position: relative;
   margin-top: -${p => (p.offset * 2.375)}rem;
   font-size: 2rem;
@@ -128,7 +147,7 @@ const Word = styled.div`
   margin: 0 0.5rem;
 `;
 
-const Letter = styled.div<{correct: string}>`
+const Letter = styled.div<{ correct: string }>`
   font-size: 2rem;
   color: #ff901f;
   overflow: visible;
@@ -161,7 +180,7 @@ const TimeSelector = styled.div`
   padding: 1rem;
 `;
 
-const TimerOption = styled.div<{selected: boolean}>`
+const TimerOption = styled.div<{ selected: boolean }>`
   display: flex;
   font-size: 1.5rem;
   margin: 0 0.5rem;
@@ -169,7 +188,7 @@ const TimerOption = styled.div<{selected: boolean}>`
   ${p => (p.selected ? `color: ${StyleConstants.yellow}; text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073` : null)};
 `;
 
-const Caret = styled.span<{offset: number}>`
+const Caret = styled.span<{ offset: number }>`
   transition: left 0.1s ease;
   margin-left: ${p => (p.offset)}rem;
   position: absolute;
@@ -190,37 +209,34 @@ const Caret = styled.span<{offset: number}>`
 const TopBar = () => {
   return (
     <TopBarContainer>
-      <MenuOption>Hello</MenuOption>
-      <MenuOption>Hello</MenuOption>
-      <MenuOption>Hello</MenuOption>
-      <MenuOption>Hello</MenuOption>
+      <MenuOption>The most nostalgic type test out there</MenuOption>
     </TopBarContainer>
   );
 }
 
 const TimerComponent = ({
-  timeRemaining, 
+  timeRemaining,
   setTestDuration,
   reset
-} : {
-  timeRemaining: number, 
+}: {
+  timeRemaining: number,
   setTestDuration: React.Dispatch<React.SetStateAction<number>>,
   reset: Function
 }) => {
   const [selected, setselected] = useState<number>(30);
   const timerTimes = [30, 60, 120];
 
-  const TimerOptionComponent = ({time} : {time: number}) => {
+  const TimerOptionComponent = ({ time }: { time: number }) => {
     return (
-      <TimerOption 
-        selected={selected === time} 
+      <TimerOption
+        selected={selected === time}
         onClick={() => {
-          setselected(time); 
+          setselected(time);
           setTestDuration(time);
           reset();
         }}>
-          {time}
-        </TimerOption>
+        {time}
+      </TimerOption>
     );
   }
 
@@ -231,7 +247,7 @@ const TimerComponent = ({
         {
           timerTimes.map((time, idx) => {
             return (
-              <TimerOptionComponent time={time} key={`timer_option_${idx}`}/>
+              <TimerOptionComponent time={time} key={`timer_option_${idx}`} />
             );
           })
         }
@@ -240,7 +256,7 @@ const TimerComponent = ({
   );
 }
 
-const CompletedWordsComponent = ({completedWordsList} : {completedWordsList: string[]}) => {
+const CompletedWordsComponent = ({ completedWordsList }: { completedWordsList: string[] }) => {
   return (
     <>
       { // Render any completed words
@@ -254,7 +270,7 @@ const CompletedWordsComponent = ({completedWordsList} : {completedWordsList: str
                       React.Children.toArray(
                         word.split("").map((letter, lidx) => {
                           return (
-                            <Letter correct={"y"} style={{color: StyleConstants.yellow}}>{letter}</Letter>
+                            <Letter correct={"y"} style={{ color: StyleConstants.yellow }}>{letter}</Letter>
                           );
                         })
                       )
@@ -275,8 +291,7 @@ const CurrentWordComponent = ({
   currentWord,
   currentWordIndex,
   typedLetters,
-
-} : {
+}: {
   currentWord: string,
   currentWordIndex: number,
   typedLetters: string[],
@@ -306,7 +321,7 @@ const CurrentWordComponent = ({
                         currentLetter ?
                           <>
                             <Caret offset={offset}>|</Caret>
-                            <Letter correct={"n"} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                            <Letter correct={"n"} style={{ color: StyleConstants.orange }}>{letter}</Letter>
                           </>
                           :
                           <>
@@ -315,14 +330,14 @@ const CurrentWordComponent = ({
                                 <>
                                   {
                                     isLetterBeforeCurrentLetter ?
-                                      <Letter correct={"u"} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                                      <Letter correct={"u"} style={{ color: StyleConstants.orange }}>{letter}</Letter>
                                       :
                                       <>
                                         {
                                           correctLetter ?
-                                            <Letter correct={"y"} style={{color: StyleConstants.yellow}}>{letter}</Letter>
+                                            <Letter correct={"y"} style={{ color: StyleConstants.yellow }}>{letter}</Letter>
                                             :
-                                            <Letter correct={"n"} style={{color: StyleConstants.red}}>{typedLetters[lidx]}</Letter>
+                                            <Letter correct={"n"} style={{ color: StyleConstants.red }}>{typedLetters[lidx]}</Letter>
                                         }
                                         {
                                           lastLetter && extraLetters.length === 0 ?
@@ -334,7 +349,7 @@ const CurrentWordComponent = ({
                                   }
                                 </>
                                 :
-                                <Letter correct={"n"} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                                <Letter correct={"n"} style={{ color: StyleConstants.orange }}>{letter}</Letter>
                             }
                           </>
                       }
@@ -353,9 +368,9 @@ const CurrentWordComponent = ({
                         <Letter correct={"n"} key={currentWordIndex + lidx} style={{ color: StyleConstants.red_extra_letter }}>{letter}</Letter>
                         {
                           lastLetter ?
-                          <Caret offset={offset}>|</Caret>
-                          :
-                          null
+                            <Caret offset={offset}>|</Caret>
+                            :
+                            null
                         }
                       </>
                     );
@@ -374,7 +389,7 @@ const CurrentWordComponent = ({
 const LaterWordsComponent = ({
   wordList,
   currentWordIndex
-} : {
+}: {
   wordList: string[],
   currentWordIndex: number
 }) => {
@@ -395,7 +410,7 @@ const LaterWordsComponent = ({
                           word.split("").map((letter, lidx) => {
                             return (
                               <>
-                                <Letter correct={"u"} key={widx+lidx} style={{color: StyleConstants.orange}}>{letter}</Letter>
+                                <Letter correct={"u"} key={widx + lidx} style={{ color: StyleConstants.orange }}>{letter}</Letter>
                               </>
                             );
                           })
@@ -419,7 +434,7 @@ const TyperComponent = ({
   currentWordIndex,
   typedLetters,
   textVerticalOffset
-} : {
+}: {
   wordList: string[],
   completedWordsList: string[],
   currentWord: string,
@@ -431,7 +446,7 @@ const TyperComponent = ({
     <TyperContainer>
       <TypeText>
         <TypeTextContent offset={textVerticalOffset}>
-          <CompletedWordsComponent completedWordsList={completedWordsList}/>
+          <CompletedWordsComponent completedWordsList={completedWordsList} />
           <CurrentWordComponent currentWord={currentWord} currentWordIndex={currentWordIndex} typedLetters={typedLetters} />
           <LaterWordsComponent wordList={wordList} currentWordIndex={currentWordIndex} />
         </TypeTextContent>
@@ -444,7 +459,7 @@ const ResultsComponent = ({
   completedWords,
   testDuration,
   reset
-} : {
+}: {
   completedWords: number,
   testDuration: number,
   reset: Function
@@ -452,7 +467,7 @@ const ResultsComponent = ({
   return (
     <ResultsScreen>
       {((completedWords / testDuration) * 60).toFixed(1)} WPM
-      <FontAwesomeIcon icon={faRotateLeft} onClick={() => {reset();}} style={{cursor: "pointer"}}/>
+      <FontAwesomeIcon icon={faRotateLeft} onClick={() => { reset(); }} style={{ cursor: "pointer" }} />
     </ResultsScreen>
   );
 }
@@ -513,7 +528,7 @@ const App = () => {
     const interval = setInterval(() => {
       setTimeRemaining(timeRemaining - 1);
     }, 1000);
-    
+
     return () => clearInterval(interval);
   }, [timeRemaining, testInProgress]);
 
@@ -522,7 +537,7 @@ const App = () => {
   }, [currentWord, wordList, currentWordIndex]);
 
   useEffect(() => {
-		document.onkeydown = (e) => {
+    document.onkeydown = (e) => {
       e.preventDefault();
       if (["Shift", "Control", "Alt"].includes(e.key)) {
         return;
@@ -565,43 +580,53 @@ const App = () => {
             setTextVerticalOffset(textVerticalOffset + 1);
           }
       }
-		};
-		return () => {
-			document.onkeydown = null;
-		};
-	}, [
-    typedLetters, 
-    currentWord, 
-    wordList, 
-    currentWordIndex, 
-    completedWordsList, 
-    textVerticalOffset, 
+    };
+    return () => {
+      document.onkeydown = null;
+    };
+  }, [
+    typedLetters,
+    currentWord,
+    wordList,
+    currentWordIndex,
+    completedWordsList,
+    textVerticalOffset,
     testInProgress
   ]);
 
+
+  const RestartTestComponent = () => {
+    return (
+      <ResetButton onClick={reset}>
+        <FontAwesomeIcon icon={faRotateLeft} onClick={() => { reset(); }} style={{ cursor: "pointer" }} />
+      </ResetButton>
+    )
+  }
+
   return (
-    <AppContainer style={{backgroundImage: `url(${Background})`}}>
+    <AppContainer style={{ backgroundImage: `url(${Background})` }}>
       <Content>
         <Title>Pineapple Typer</Title>
         <TopBar />
-        <TimerComponent timeRemaining = {timeRemaining} setTestDuration = {setTestDuration} reset = {reset}/>
+        <TimerComponent timeRemaining={timeRemaining} setTestDuration={setTestDuration} reset={reset} />
         {
           timeRemaining === 0 ?
-            <ResultsComponent 
-              completedWords = {completedWordsList.length} 
-              testDuration = {testDuration}
-              reset = {reset}
+            <ResultsComponent
+              completedWords={completedWordsList.length}
+              testDuration={testDuration}
+              reset={reset}
             />
             :
-            <TyperComponent 
-              wordList = {wordList} 
-              completedWordsList = {completedWordsList}
-              currentWord = {currentWord} 
-              currentWordIndex = {currentWordIndex}
-              typedLetters = {typedLetters}
-              textVerticalOffset = {textVerticalOffset}
+            <TyperComponent
+              wordList={wordList}
+              completedWordsList={completedWordsList}
+              currentWord={currentWord}
+              currentWordIndex={currentWordIndex}
+              typedLetters={typedLetters}
+              textVerticalOffset={textVerticalOffset}
             />
         }
+        <RestartTestComponent />
       </Content>
     </AppContainer>
   );
