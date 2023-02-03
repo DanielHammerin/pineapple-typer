@@ -570,6 +570,7 @@ const App = () => {
           }
           break;
         case "Tab":
+          // eslint-disable-next-line
           reset();
           break;
         default:
