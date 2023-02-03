@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Background from "../src/assets/images/wallpapersden.com_sunset-retrowave-synthwave_3840x2160.jpg"
 import './App.css';
 import styled from "styled-components";
@@ -502,7 +502,7 @@ const App = () => {
     }
   };
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setWordlist(shuffleWordList(wordsJson));
     setCompletedWordsList([]);
     setCurrentWord("");
@@ -511,7 +511,7 @@ const App = () => {
     setTextVerticalOffset(0);
     setTestInProgress(false);
     setTimeRemaining(testDuration);
-  };
+  }, [testDuration]);
 
   useEffect(() => {
     shuffleWordList(wordsJson);
@@ -570,7 +570,6 @@ const App = () => {
           }
           break;
         case "Tab":
-          // eslint-disable-next-line
           reset();
           break;
         default:
@@ -592,7 +591,8 @@ const App = () => {
     currentWordIndex,
     completedWordsList,
     textVerticalOffset,
-    testInProgress
+    testInProgress,
+    reset
   ]);
 
 

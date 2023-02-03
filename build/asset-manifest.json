@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/pineapple-typer/static/css/main.fcda4e50.css",
-    "main.js": "/pineapple-typer/static/js/main.2df5a3ae.js",
+    "main.js": "/pineapple-typer/static/js/main.5b0813fc.js",
     "static/js/787.901ba840.chunk.js": "/pineapple-typer/static/js/787.901ba840.chunk.js",
     "static/media/wallpapersden.com_sunset-retrowave-synthwave_3840x2160.jpg": "/pineapple-typer/static/media/wallpapersden.com_sunset-retrowave-synthwave_3840x2160.f69c5b24213acd322e97.jpg",
     "index.html": "/pineapple-typer/index.html",
     "main.fcda4e50.css.map": "/pineapple-typer/static/css/main.fcda4e50.css.map",
-    "main.2df5a3ae.js.map": "/pineapple-typer/static/js/main.2df5a3ae.js.map",
+    "main.5b0813fc.js.map": "/pineapple-typer/static/js/main.5b0813fc.js.map",
     "787.901ba840.chunk.js.map": "/pineapple-typer/static/js/787.901ba840.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.fcda4e50.css",
-    "static/js/main.2df5a3ae.js"
+    "static/js/main.5b0813fc.js"
   ]
 }
