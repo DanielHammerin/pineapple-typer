@@ -206,6 +206,7 @@ const Caret = styled.span<{ offset: number }>`
 	}
 `;
 
+
 const TopBar = () => {
   return (
     <TopBarContainer>
