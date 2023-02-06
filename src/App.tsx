@@ -5,6 +5,7 @@ import styled from "styled-components";
 import wordsJson from "./config/wordlists/words.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateLeft } from "@fortawesome/free-solid-svg-icons";
+import { ignoredKeypresses } from "./config/keypresses";
 
 const StyleConstants = {
   yellow: "#ffd319",
@@ -587,22 +588,22 @@ const App = () => {
   useEffect(() => {
     document.onkeydown = (e) => {
       e.preventDefault();
-      if (["Shift", "Control", "Alt"].includes(e.key)) {
+      if (ignoredKeypresses.includes(e.key)) {
         return;
       }
 
       if (!testInProgress) setTestInProgress(true);
 
       switch (e.key) {
-        case "Escape":
-          console.log(`Remaining words: ${wordList.length}`);
-          console.log(wordList);
-          console.log(`Completed words: ${completedWordsList.length}`);
-          console.log(completedWordsList);
-          console.log(`Current word: ${currentWord}`);
-          console.log(`Current word index: ${currentWordIndex}`);
-          console.log(`Typed letters: ${typedLetters}`);
-          break;
+        // case "Escape":
+        //   console.log(`Remaining words: ${wordList.length}`);
+        //   console.log(wordList);
+        //   console.log(`Completed words: ${completedWordsList.length}`);
+        //   console.log(completedWordsList);
+        //   console.log(`Current word: ${currentWord}`);
+        //   console.log(`Current word index: ${currentWordIndex}`);
+        //   console.log(`Typed letters: ${typedLetters}`);
+        //   break;
         case " ":
           if (typedLetters.join("") === currentWord) {
             setCompletedWordsList([...completedWordsList, wordList.splice(0, 1).toString()]);
