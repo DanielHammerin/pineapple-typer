@@ -26,7 +26,7 @@ const AppContainer = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #323437;
-  background-repeat: no-repeat;
+  background-repeat: repeat-x;
   background-size: auto 100%;
   background-position: center;
 `;
