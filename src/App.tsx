@@ -39,6 +39,7 @@ const Title = styled.div`
   align-items: center;
   justify-content: center;
   margin: 2rem;
+  text-align: center;
 
   font-size: 3rem;
   color: ${StyleConstants.yellow};
@@ -59,6 +60,7 @@ const TopBarContainer = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 auto;
+  text-align: center;
 `;
 
 const MenuOption = styled.div`
@@ -68,22 +70,35 @@ const MenuOption = styled.div`
   margin: 0 1rem;
 `;
 
+const TestWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 50rem;
+  min-width: 255px;
+  margin: 5rem 2rem 0rem 2rem;
+`;
+
 const TimerBar = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 52rem;
+  width: 100%;
+  max-width: 52rem;
   height: fit-content;
-  margin: 5rem 2rem 0rem 2rem;
+  /* margin: 0rem 2rem 0rem 2rem; */
 `;
 
 const TyperContainer = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 50rem;
-  max-width: 50rem;
+  width: auto;
+  /* min-width: 50rem; */
+  /* max-width: 50rem; */
   max-height: 9rem;
-  margin: 0.5rem 2rem 2rem 2rem;
+  margin: 0.5rem 0rem 0rem 0rem;
   padding: 1rem;
   background: #00000036;
   border-radius: 1rem;
@@ -94,8 +109,8 @@ const ResultsScreen = styled.div`
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  min-width: 50rem;
-  max-width: 50rem;
+  width: 100%;
+  /* max-width: 50rem; */
   height: 9rem;
   margin: 0.5rem 2rem 2rem 2rem;
   padding: 2rem 1rem;
@@ -668,28 +683,30 @@ const App = () => {
         <Title>Pineapple Typer</Title>
         <TopBar />
 
-        <TimerComponent
-          timeRemaining={timeRemaining}
-          setTestDuration={setTestDuration}
-          reset={reset}
-        />
-
-        {timeRemaining === 0 ? (
-          <ResultsComponent
-            completedWords={completedWordsList.length}
-            testDuration={testDuration}
+        <TestWrapper>
+          <TimerComponent
+            timeRemaining={timeRemaining}
+            setTestDuration={setTestDuration}
             reset={reset}
           />
-        ) : (
-          <TyperComponent
-            wordList={wordList}
-            completedWordsList={completedWordsList}
-            currentWord={currentWord}
-            currentWordIndex={currentWordIndex}
-            typedLetters={typedLetters}
-            textVerticalOffset={textVerticalOffset}
-          />
-        )}
+
+          {timeRemaining === 0 ? (
+            <ResultsComponent
+              completedWords={completedWordsList.length}
+              testDuration={testDuration}
+              reset={reset}
+            />
+          ) : (
+            <TyperComponent
+              wordList={wordList}
+              completedWordsList={completedWordsList}
+              currentWord={currentWord}
+              currentWordIndex={currentWordIndex}
+              typedLetters={typedLetters}
+              textVerticalOffset={textVerticalOffset}
+            />
+          )}
+        </TestWrapper>
 
         <RestartTestComponent />
 
