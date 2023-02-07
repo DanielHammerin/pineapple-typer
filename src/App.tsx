@@ -88,15 +88,12 @@ const TimerBar = styled.div`
   width: 100%;
   max-width: 52rem;
   height: fit-content;
-  /* margin: 0rem 2rem 0rem 2rem; */
 `;
 
 const TyperContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: auto;
-  /* min-width: 50rem; */
-  /* max-width: 50rem; */
   max-height: 9rem;
   margin: 0.5rem 0rem 0rem 0rem;
   padding: 1rem;
@@ -110,7 +107,6 @@ const ResultsScreen = styled.div`
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  /* max-width: 50rem; */
   height: 9rem;
   margin: 0.5rem 2rem 2rem 2rem;
   padding: 2rem 1rem;
