@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Background from "../src/assets/images/wallpapersden.com_sunset-retrowave-synthwave_3840x2160.jpg";
 import "./App.css";
 import styled from "styled-components";
@@ -102,6 +102,7 @@ const TyperContainer = styled.div`
   padding: 1rem;
   background: #00000036;
   border-radius: 1rem;
+  backdrop-filter: blur(5px);
 `;
 
 const ResultsScreen = styled.div`
@@ -137,6 +138,7 @@ const ResetButton = styled.div`
   background: #00000036;
   border-radius: 1rem;
   cursor: pointer;
+  backdrop-filter: blur(5px);
 
   font-size: 1.5rem;
   color: ${StyleConstants.yellow};
@@ -200,6 +202,7 @@ const Timer = styled.div`
   height: 1.5rem;
   width: fit-content;
   padding: 1rem;
+  backdrop-filter: blur(5px);
 `;
 
 const TimeSelector = styled.div`
@@ -211,6 +214,7 @@ const TimeSelector = styled.div`
   height: 1.5rem;
   width: fit-content;
   padding: 1rem;
+  backdrop-filter: blur(5px);
 `;
 
 const TimerOption = styled.div<{ selected: boolean }>`
@@ -246,13 +250,45 @@ const Footer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   width: 100%;
   margin-bottom: 1rem;
 
   font-size: 0.75rem;
   color: ${StyleConstants.yellow};
   text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
+
+  > a {
+    color: ${StyleConstants.cyan};
+    text-shadow: 0 0 10px #19ffea, 0 0 10px #fff, 0 0 10px #0027e6, 0 0 15px #002be6;
+  }
+`;
+
+const MobileTutorial = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  top: 40%;
+  z-index: 10;
+
+  background: #00000036;
+  border-radius: 1rem;
+  height: 3rem;
+  width: fit-content;
+  padding: 1rem;
+  backdrop-filter: blur(5px);
+
+  font-size: 1rem;
+  color: ${StyleConstants.yellow};
+  text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
+
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 `;
 
 const TopBar = () => {
@@ -482,7 +518,8 @@ const TyperComponent = ({
   currentWord,
   currentWordIndex,
   typedLetters,
-  textVerticalOffset
+  textVerticalOffset,
+  hiddenInput
 }: {
   wordList: string[];
   completedWordsList: string[];
@@ -490,9 +527,16 @@ const TyperComponent = ({
   currentWordIndex: number;
   typedLetters: string[];
   textVerticalOffset: number;
+  hiddenInput: React.RefObject<HTMLInputElement>;
 }) => {
+  const handler = () => {
+    if (isMobileDevice() && hiddenInput) {
+      showVirtualKeyboard({ hiddenInput });
+    }
+  };
+
   return (
-    <TyperContainer>
+    <TyperContainer id="type" onTouchEnd={handler}>
       <TypeText>
         <TypeTextContent offset={textVerticalOffset}>
           <CompletedWordsComponent completedWordsList={completedWordsList} />
@@ -531,8 +575,66 @@ const ResultsComponent = ({
   );
 };
 
-const FooterItemComponent = ({ itemText }: { itemText: string }) => {
-  return <p>{itemText}</p>;
+const FooterItemComponent = ({
+  itemText,
+  children
+}: {
+  itemText?: string;
+  children?: JSX.Element;
+}) => {
+  return (
+    <>
+      <p>{itemText}</p>
+      {children}
+    </>
+  );
+};
+
+const isMobileDevice = () => {
+  if (
+    navigator.userAgent.match(/Android/i) ||
+    navigator.userAgent.match(/webOS/i) ||
+    navigator.userAgent.match(/iPhone/i) ||
+    navigator.userAgent.match(/iPad/i) ||
+    navigator.userAgent.match(/iPod/i) ||
+    navigator.userAgent.match(/BlackBerry/i) ||
+    navigator.userAgent.match(/Windows Phone/i)
+  ) {
+    return true;
+  }
+  return false;
+};
+
+const showVirtualKeyboard = ({
+  hiddenInput
+}: {
+  hiddenInput: React.RefObject<HTMLInputElement>;
+}) => {
+  if (hiddenInput.current) {
+    hiddenInput.current.focus();
+  }
+};
+
+const useWindowSize = () => {
+  const [size, setSize] = useState([0, 0]);
+  useLayoutEffect(() => {
+    function updateSize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener("resize", updateSize);
+    updateSize();
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+  return size;
+};
+
+const MobileTutorialComponent = () => {
+  return (
+    <MobileTutorial>
+      <p>Swipe up to start.</p>
+      <p>Remember to turn off caps.</p>
+    </MobileTutorial>
+  );
 };
 
 const App = () => {
@@ -546,6 +648,11 @@ const App = () => {
   const [testInProgress, setTestInProgress] = useState<boolean>(false);
   const [testDuration, setTestDuration] = useState<number>(30);
   const [timeRemaining, setTimeRemaining] = useState<number>(30);
+
+  const keyboardHack = React.useRef<HTMLInputElement>(null);
+  const [width, height] = useWindowSize();
+
+  const [showMobileTutorial, setShowMobileTutorial] = useState(false);
 
   const shuffleWordList = (list: string[]) => {
     for (let i = list.length - 1; i > 0; i--) {
@@ -600,6 +707,20 @@ const App = () => {
   }, [currentWord, wordList, currentWordIndex]);
 
   useEffect(() => {
+    keyboardHack.current!.focus();
+  }, [width, height]);
+
+  useEffect(() => {
+    if (isMobileDevice()) {
+      setShowMobileTutorial(true);
+    }
+    const timer = setTimeout(() => {
+      setShowMobileTutorial(false);
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     document.onkeydown = (e) => {
       e.preventDefault();
       if (ignoredKeypresses.includes(e.key)) {
@@ -609,15 +730,15 @@ const App = () => {
       if (!testInProgress) setTestInProgress(true);
 
       switch (e.key) {
-        // case "Escape":
-        //   console.log(`Remaining words: ${wordList.length}`);
-        //   console.log(wordList);
-        //   console.log(`Completed words: ${completedWordsList.length}`);
-        //   console.log(completedWordsList);
-        //   console.log(`Current word: ${currentWord}`);
-        //   console.log(`Current word index: ${currentWordIndex}`);
-        //   console.log(`Typed letters: ${typedLetters}`);
-        //   break;
+        case "Escape":
+          // console.log(`Remaining words: ${wordList.length}`);
+          // console.log(wordList);
+          // console.log(`Completed words: ${completedWordsList.length}`);
+          // console.log(completedWordsList);
+          // console.log(`Current word: ${currentWord}`);
+          // console.log(`Current word index: ${currentWordIndex}`);
+          // console.log(`Typed letters: ${typedLetters}`);
+          break;
         case " ":
           if (typedLetters.join("") === currentWord) {
             setCompletedWordsList([...completedWordsList, wordList.splice(0, 1).toString()]);
@@ -681,6 +802,9 @@ const App = () => {
       <Content>
         <Title>Pineapple Typer</Title>
         <TopBar />
+        <input type="text" ref={keyboardHack} style={{ opacity: "0" }} />
+
+        {showMobileTutorial ? <MobileTutorialComponent /> : null}
 
         <TestWrapper>
           <TimerComponent
@@ -703,6 +827,7 @@ const App = () => {
               currentWordIndex={currentWordIndex}
               typedLetters={typedLetters}
               textVerticalOffset={textVerticalOffset}
+              hiddenInput={keyboardHack}
             />
           )}
         </TestWrapper>
@@ -711,6 +836,11 @@ const App = () => {
 
         <Footer>
           <FooterItemComponent itemText="Press tab to reset test." />
+          <FooterItemComponent itemText="">
+            <a href="https://github.com/DanielHammerin/pineapple-typer" target="_blank">
+              See the Code here
+            </a>
+          </FooterItemComponent>
         </Footer>
       </Content>
     </AppContainer>
