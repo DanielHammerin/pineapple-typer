@@ -120,6 +120,7 @@ const ResultsScreen = styled.div`
   font-size: 1.5rem;
   color: ${StyleConstants.yellow};
   text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
+  backdrop-filter: blur(5px);
 
   > :hover {
     transform: scale(1.25);
