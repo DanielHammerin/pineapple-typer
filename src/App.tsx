@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import Background from "../src/assets/images/wallpapersden.com_sunset-retrowave-synthwave_3840x2160.jpg";
 import "./App.css";
 import styled from "styled-components";
@@ -46,8 +46,14 @@ const Title = styled.div`
 
   font-size: 3rem;
   color: ${StyleConstants.yellow};
-  text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073,
-    0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+  text-shadow:
+    0 0 10px ${StyleConstants.yellow},
+    0 0 20px #fff,
+    0 0 30px #e60073,
+    0 0 40px #e60073,
+    0 0 50px #e60073,
+    0 0 60px #e60073,
+    0 0 70px #e60073;
 `;
 
 const Content = styled.div`
@@ -69,7 +75,11 @@ const TopBarContainer = styled.div`
 const MenuOption = styled.div`
   font-size: 1.5rem;
   color: ${StyleConstants.yellow};
-  text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
+  text-shadow:
+    0 0 10px ${StyleConstants.yellow},
+    0 0 10px #fff,
+    0 0 10px #e60073,
+    0 0 15px #e60073;
   margin: 0 1rem;
 `;
 
@@ -119,7 +129,11 @@ const ResultsScreen = styled.div`
 
   font-size: 1.5rem;
   color: ${StyleConstants.yellow};
-  text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
+  text-shadow:
+    0 0 10px ${StyleConstants.yellow},
+    0 0 10px #fff,
+    0 0 10px #e60073,
+    0 0 15px #e60073;
   backdrop-filter: blur(5px);
 
   > :hover {
@@ -143,7 +157,11 @@ const ResetButton = styled.div`
 
   font-size: 1.5rem;
   color: ${StyleConstants.yellow};
-  text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
+  text-shadow:
+    0 0 10px ${StyleConstants.yellow},
+    0 0 10px #fff,
+    0 0 10px #e60073,
+    0 0 15px #e60073;
 
   > :hover {
     transform: scale(1.25);
@@ -183,21 +201,17 @@ const Letter = styled.div<{ correct: string }>`
     p.correct === "y"
       ? `text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073`
       : null};
-  /* ${(p) =>
-    p.correct === "y"
-      ? `text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;`
-      : null}; */
-  /* ${(p) =>
-    p.correct === "n"
-      ? `text-shadow: 0 0 10px ${StyleConstants.red}, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;`
-      : null}; */
 `;
 
 const Timer = styled.div`
   display: flex;
   font-size: 1.5rem;
   color: ${StyleConstants.yellow};
-  text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
+  text-shadow:
+    0 0 10px ${StyleConstants.yellow},
+    0 0 10px #fff,
+    0 0 10px #e60073,
+    0 0 15px #e60073;
   background: #00000036;
   border-radius: 1rem;
   height: 1.5rem;
@@ -257,11 +271,19 @@ const Footer = styled.div`
 
   font-size: 0.75rem;
   color: ${StyleConstants.yellow};
-  text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
+  text-shadow:
+    0 0 10px ${StyleConstants.yellow},
+    0 0 10px #fff,
+    0 0 10px #e60073,
+    0 0 15px #e60073;
 
   > a {
     color: ${StyleConstants.cyan};
-    text-shadow: 0 0 10px #19ffea, 0 0 10px #fff, 0 0 10px #0027e6, 0 0 15px #002be6;
+    text-shadow:
+      0 0 10px #19ffea,
+      0 0 10px #fff,
+      0 0 10px #0027e6,
+      0 0 15px #002be6;
   }
 `;
 
@@ -284,7 +306,11 @@ const MobileTutorial = styled.div`
 
   font-size: 1rem;
   color: ${StyleConstants.yellow};
-  text-shadow: 0 0 10px ${StyleConstants.yellow}, 0 0 10px #fff, 0 0 10px #e60073, 0 0 15px #e60073;
+  text-shadow:
+    0 0 10px ${StyleConstants.yellow},
+    0 0 10px #fff,
+    0 0 10px #e60073,
+    0 0 15px #e60073;
 
   p {
     margin-top: 0;
@@ -307,7 +333,7 @@ const TimerComponent = ({
 }: {
   timeRemaining: number;
   setTestDuration: React.Dispatch<React.SetStateAction<number>>;
-  reset: Function;
+  reset: () => void;
 }) => {
   const [selected, setselected] = useState<number>(30);
   const timerTimes = [30, 60, 120];
@@ -331,9 +357,9 @@ const TimerComponent = ({
     <TimerBar>
       <Timer>{timeRemaining}</Timer>
       <TimeSelector>
-        {timerTimes.map((time, idx) => {
-          return <TimerOptionComponent time={time} key={`timer_option_${idx}`} />;
-        })}
+        {timerTimes.map((time) => (
+          <TimerOptionComponent time={time} key={time} />
+        ))}
       </TimeSelector>
     </TimerBar>
   );
@@ -345,25 +371,19 @@ const CompletedWordsComponent = ({ completedWordsList }: { completedWordsList: s
       {
         // Render any completed words
         completedWordsList.length > 0
-          ? React.Children.toArray(
-              completedWordsList.map((word, widx) => {
-                return (
-                  <>
-                    <Word>
-                      {React.Children.toArray(
-                        word.split("").map((letter, lidx) => {
-                          return (
-                            <Letter correct={"y"} style={{ color: StyleConstants.yellow }}>
-                              {letter}
-                            </Letter>
-                          );
-                        })
-                      )}
-                    </Word>
-                  </>
-                );
-              })
-            )
+          ? completedWordsList.map((word, widx) => (
+              <Word key={`completed-word-${widx}`}>
+                {word.split("").map((letter, lidx) => (
+                  <Letter
+                    key={`completed-${widx}-${lidx}`}
+                    correct={"y"}
+                    style={{ color: StyleConstants.yellow }}
+                  >
+                    {letter}
+                  </Letter>
+                ))}
+              </Word>
+            ))
           : null
       }
     </>
@@ -391,77 +411,69 @@ const CurrentWordComponent = ({
         // Render current word
         <Word key={currentWordIndex} id="current_word">
           <>
-            {React.Children.toArray(
-              currentWord.split("").map((letter, lidx) => {
-                const currentLetter = typedLetters.length === lidx;
-                const correctLetter = typedLetters[lidx] === currentWord.split("")[lidx];
-                const lastLetter = currentWord.length === lidx + 1;
-                const hasTypedAnything = typedLetters.length > 0;
-                const isLetterBeforeCurrentLetter = lidx > typedLetters.length;
+            {currentWord.split("").map((letter, lidx) => {
+              const currentLetter = typedLetters.length === lidx;
+              const correctLetter = typedLetters[lidx] === currentWord.split("")[lidx];
+              const lastLetter = currentWord.length === lidx + 1;
+              const hasTypedAnything = typedLetters.length > 0;
+              const isLetterBeforeCurrentLetter = lidx > typedLetters.length;
 
-                return (
-                  <>
-                    {currentLetter ? (
-                      <>
-                        <Caret offset={offset}>|</Caret>
+              return (
+                <React.Fragment key={`current-${lidx}`}>
+                  {currentLetter ? (
+                    <>
+                      <Caret offset={offset}>|</Caret>
+                      <Letter correct={"n"} style={{ color: StyleConstants.orange }}>
+                        {letter}
+                      </Letter>
+                    </>
+                  ) : (
+                    <>
+                      {hasTypedAnything ? (
+                        <>
+                          {isLetterBeforeCurrentLetter ? (
+                            <Letter correct={"u"} style={{ color: StyleConstants.orange }}>
+                              {letter}
+                            </Letter>
+                          ) : (
+                            <>
+                              {correctLetter ? (
+                                <Letter correct={"y"} style={{ color: StyleConstants.yellow }}>
+                                  {letter}
+                                </Letter>
+                              ) : (
+                                <Letter correct={"n"} style={{ color: StyleConstants.red }}>
+                                  {typedLetters[lidx]}
+                                </Letter>
+                              )}
+                              {lastLetter && extraLetters.length === 0 ? (
+                                <Caret offset={offset}>|</Caret>
+                              ) : null}
+                            </>
+                          )}
+                        </>
+                      ) : (
                         <Letter correct={"n"} style={{ color: StyleConstants.orange }}>
                           {letter}
                         </Letter>
-                      </>
-                    ) : (
-                      <>
-                        {hasTypedAnything ? (
-                          <>
-                            {isLetterBeforeCurrentLetter ? (
-                              <Letter correct={"u"} style={{ color: StyleConstants.orange }}>
-                                {letter}
-                              </Letter>
-                            ) : (
-                              <>
-                                {correctLetter ? (
-                                  <Letter correct={"y"} style={{ color: StyleConstants.yellow }}>
-                                    {letter}
-                                  </Letter>
-                                ) : (
-                                  <Letter correct={"n"} style={{ color: StyleConstants.red }}>
-                                    {typedLetters[lidx]}
-                                  </Letter>
-                                )}
-                                {lastLetter && extraLetters.length === 0 ? (
-                                  <Caret offset={offset}>|</Caret>
-                                ) : null}
-                              </>
-                            )}
-                          </>
-                        ) : (
-                          <Letter correct={"n"} style={{ color: StyleConstants.orange }}>
-                            {letter}
-                          </Letter>
-                        )}
-                      </>
-                    )}
-                  </>
-                );
-              })
-            )}
+                      )}
+                    </>
+                  )}
+                </React.Fragment>
+              );
+            })}
             {extraLetters
-              ? React.Children.toArray(
-                  extraLetters.map((letter, lidx) => {
-                    const lastLetter = extraLetters.length - 1 === lidx;
-                    return (
-                      <>
-                        <Letter
-                          correct={"n"}
-                          key={currentWordIndex + lidx}
-                          style={{ color: StyleConstants.red_extra_letter }}
-                        >
-                          {letter}
-                        </Letter>
-                        {lastLetter ? <Caret offset={offset}>|</Caret> : null}
-                      </>
-                    );
-                  })
-                )
+              ? extraLetters.map((letter, lidx) => {
+                  const lastLetter = extraLetters.length - 1 === lidx;
+                  return (
+                    <React.Fragment key={`extra-${lidx}`}>
+                      <Letter correct={"n"} style={{ color: StyleConstants.red_extra_letter }}>
+                        {letter}
+                      </Letter>
+                      {lastLetter ? <Caret offset={offset}>|</Caret> : null}
+                    </React.Fragment>
+                  );
+                })
               : null}
           </>
         </Word>
@@ -481,32 +493,20 @@ const LaterWordsComponent = ({
     <>
       {
         // Render any yet to be written words
-        React.Children.toArray(
-          wordList.map((word, widx) => {
-            return (
-              <>
-                {widx === currentWordIndex ? null : (
-                  <Word key={widx}>
-                    {React.Children.toArray(
-                      word.split("").map((letter, lidx) => {
-                        return (
-                          <>
-                            <Letter
-                              correct={"u"}
-                              key={widx + lidx}
-                              style={{ color: StyleConstants.orange }}
-                            >
-                              {letter}
-                            </Letter>
-                          </>
-                        );
-                      })
-                    )}
-                  </Word>
-                )}
-              </>
-            );
-          })
+        wordList.map((word, widx) =>
+          widx === currentWordIndex ? null : (
+            <Word key={`later-word-${widx}`}>
+              {word.split("").map((letter, lidx) => (
+                <Letter
+                  key={`later-${widx}-${lidx}`}
+                  correct={"u"}
+                  style={{ color: StyleConstants.orange }}
+                >
+                  {letter}
+                </Letter>
+              ))}
+            </Word>
+          )
         )
       }
     </>
@@ -560,7 +560,7 @@ const ResultsComponent = ({
 }: {
   completedWords: number;
   testDuration: number;
-  reset: Function;
+  reset: () => void;
 }) => {
   return (
     <ResultsScreen>
@@ -591,20 +591,8 @@ const FooterItemComponent = ({
   );
 };
 
-const isMobileDevice = () => {
-  if (
-    navigator.userAgent.match(/Android/i) ||
-    navigator.userAgent.match(/webOS/i) ||
-    navigator.userAgent.match(/iPhone/i) ||
-    navigator.userAgent.match(/iPad/i) ||
-    navigator.userAgent.match(/iPod/i) ||
-    navigator.userAgent.match(/BlackBerry/i) ||
-    navigator.userAgent.match(/Windows Phone/i)
-  ) {
-    return true;
-  }
-  return false;
-};
+const isMobileDevice = () =>
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
 
 const showVirtualKeyboard = ({
   hiddenInput
@@ -708,7 +696,7 @@ const App = () => {
   }, [currentWord, wordList, currentWordIndex]);
 
   useEffect(() => {
-    keyboardHack.current!.focus();
+    if (keyboardHack.current) keyboardHack.current.focus();
   }, [width, height]);
 
   useEffect(() => {
@@ -722,7 +710,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    document.onkeydown = (e) => {
+    const handler = (e: KeyboardEvent) => {
       e.preventDefault();
       if (ignoredKeypresses.includes(e.key)) {
         return;
@@ -732,20 +720,13 @@ const App = () => {
 
       switch (e.key) {
         case "Escape":
-          // console.log(`Remaining words: ${wordList.length}`);
-          // console.log(wordList);
-          // console.log(`Completed words: ${completedWordsList.length}`);
-          // console.log(completedWordsList);
-          // console.log(`Current word: ${currentWord}`);
-          // console.log(`Current word index: ${currentWordIndex}`);
-          // console.log(`Typed letters: ${typedLetters}`);
           break;
         case " ":
           if (typedLetters.join("") === currentWord) {
-            setCompletedWordsList([...completedWordsList, wordList.splice(0, 1).toString()]);
-            setWordlist(wordList.slice(0, wordList.length));
-            setCurrentWord(wordList[currentWordIndex]);
-            setCurrentWordIndex(currentWordIndex);
+            const [completedWord, ...remainingWords] = wordList;
+            setCompletedWordsList([...completedWordsList, completedWord]);
+            setWordlist(remainingWords);
+            setCurrentWord(remainingWords[0]);
             setTypedLetters([]);
           }
           break;
@@ -766,8 +747,9 @@ const App = () => {
           }
       }
     };
+    document.addEventListener("keydown", handler);
     return () => {
-      document.onkeydown = null;
+      document.removeEventListener("keydown", handler);
     };
   }, [
     typedLetters,
@@ -838,7 +820,11 @@ const App = () => {
         <Footer>
           <FooterItemComponent itemText="Press tab to reset test." />
           <FooterItemComponent itemText="">
-            <a href="https://github.com/DanielHammerin/pineapple-typer" target="_blank">
+            <a
+              href="https://github.com/DanielHammerin/pineapple-typer"
+              target="_blank"
+              rel="noreferrer"
+            >
               See the Code here
             </a>
           </FooterItemComponent>
